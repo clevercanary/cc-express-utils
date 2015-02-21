@@ -29,3 +29,26 @@ exports.setupResponseCallback = function (res, formatFn) {
         res.json(200, returnValue);
     };
 };
+
+/*
+ * Create customer error message for the specified field in
+ * the format:
+ *
+ * {
+ *   message: "My error message"
+ * }
+ *
+ * @param fieldName Name of field with validation error
+ * @param message Error text
+ */
+exports.createFormFieldErrorMessage = function(fieldName, message) {
+
+    var errors = {};
+    errors[fieldName] = {
+        message: message
+    };
+
+    return {
+        errors:errors
+    };
+};
