@@ -11,7 +11,7 @@
  * Called from web controllers. Pass to service layer as a callback to
  * be invoked once service has completed coordinating/mediating.
  *
- * @param formatFn Function for formatting response value. Optional.
+ * @param {Function} [formatFn] - Function for formatting response value. Optional.
  */
 exports.setupResponseCallback = function (res, formatFn) {
 
