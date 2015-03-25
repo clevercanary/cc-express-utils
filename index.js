@@ -19,14 +19,14 @@ exports.setupResponseCallback = function (res, formatFn) {
 
         if (error) {
             console.error(error);
-            return res.json(500, error);
+            return res.status(500).json(error);
         }
 
         if ( formatFn ) {
             returnValue = formatFn(returnValue);
         }
 
-        res.json(200, returnValue);
+        res.status(200).json(returnValue);
     };
 };
 
