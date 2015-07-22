@@ -11,6 +11,7 @@
  * Called from web controllers. Pass to service layer as a callback to
  * be invoked once service has completed coordinating/mediating.
  *
+ * @param {Object} res - HTTP Response
  * @param {Function} [formatFn] - Function for formatting response value. Optional.
  */
 exports.setupResponseCallback = function (res, formatFn) {
@@ -19,18 +20,18 @@ exports.setupResponseCallback = function (res, formatFn) {
 
         if (error) {
             console.error(error);
-            return res.json(500, error);
+            return res.status(500).json(error);
         }
 
         if ( formatFn ) {
             returnValue = formatFn(returnValue);
         }
 
-        res.json(200, returnValue);
+        res.status(200).json(returnValue);
     };
 };
 
-/*
+/**
  * Create customer error message for the specified field in
  * the format:
  *
