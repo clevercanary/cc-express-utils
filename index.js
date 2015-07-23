@@ -4,6 +4,8 @@
 
 "use strict";
 
+var util = require("util");
+
 /**
  * Create response callback function, returning either 500 on error
  * or 200 with data.
@@ -62,17 +64,9 @@ exports.createFormFieldErrorMessage = function(fieldName, message) {
 };
 
 /**
- * Form Field Validation
+ * Validation Errors
  *
- * Errors as:
- * {
- *    name: {
- *      msg: "Invalid name",
- *      value: 123
- *    }
- * }
- *
- * @param {Array} errors
+ * @param {Array} errors - of the format:
  * @constructor
  */
 function ValidationError(errors) {
@@ -82,13 +76,31 @@ function ValidationError(errors) {
     }
     this.errors = errors;
     this.statusCode = 422;
+    this.name = "ValidationError";
+    var err = Error("ValidationError");
+    this.stack = err.stack;
+    console.log(this.stack);
 }
 
+ValidationError.prototype = Object.create(Error.prototype);
+ValidationError.prototype.constructor = ValidationError;
+
+/**
+ * Format Form Field Errors:
+ *
+ * {
+ *  name: {
+ *   msg: "Invalid name, name must be a string",
+  *  value: 123
+  * }
+ * 
+ * @returns {Object}
+ */
 ValidationError.prototype.formatFormFieldErrors = function() {
 
     var errObj = {};
-
     var errors = this.errors;
+
     for (var i = 0; i < errors.length; i++) {
 
         var fieldErr = errors[i];
@@ -97,6 +109,7 @@ ValidationError.prototype.formatFormFieldErrors = function() {
             value: fieldErr.value
         }
     }
+
     return errObj;
 };
 exports.ValidationError = ValidationError;
