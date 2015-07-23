@@ -19,8 +19,15 @@ exports.setupResponseCallback = function (res, formatFn) {
     return function (error, returnValue) {
 
         if (error) {
-            console.error(error);
-            return res.status(500).json(error);
+
+            if (error instanceof ValidationError) {
+
+                var errObj = error.formatFormFieldErrors();
+                return res.status(error.statusCode).json(errObj);
+            }
+            else {
+                return res.status(500).json(error);
+            }
         }
 
         if ( formatFn ) {
@@ -53,3 +60,43 @@ exports.createFormFieldErrorMessage = function(fieldName, message) {
         errors:errors
     };
 };
+
+/**
+ * Form Field Validation
+ *
+ * Errors as:
+ * {
+ *    name: {
+ *      msg: "Invalid name",
+ *      value: 123
+ *    }
+ * }
+ *
+ * @param {Array} errors
+ * @constructor
+ */
+function ValidationError(errors) {
+
+    if (!Array.isArray(errors)) {
+        errors = [errors];
+    }
+    this.errors = errors;
+    this.statusCode = 422;
+}
+
+ValidationError.prototype.formatFormFieldErrors = function() {
+
+    var errObj = {};
+
+    var errors = this.errors;
+    for (var i = 0; i < errors.length; i++) {
+
+        var fieldErr = errors[i];
+        errObj[fieldErr.param] = {
+            msg: fieldErr.msg,
+            value: fieldErr.value
+        }
+    }
+    return errObj;
+};
+exports.ValidationError = ValidationError;
