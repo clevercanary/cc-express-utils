@@ -5,6 +5,7 @@
 "use strict";
 
 var UAParser = require("ua-parser-js");
+var parser = new UAParser();
 
 /**
  * Create response callback function, returning either 500 on error
@@ -107,7 +108,7 @@ ValidationError.prototype.formatFormFieldErrors = function() {
         errObj[fieldErr.param] = {
             msg: fieldErr.msg,
             value: fieldErr.value
-        }
+        };
     }
 
     return errObj;
