@@ -4,7 +4,7 @@
 
 "use strict";
 
-var util = require("util");
+var UAParser = require("ua-parser-js");
 
 /**
  * Create response callback function, returning either 500 on error
@@ -113,3 +113,23 @@ ValidationError.prototype.formatFormFieldErrors = function() {
     return errObj;
 };
 exports.ValidationError = ValidationError;
+
+/**
+ * Handle caching issue on safari page refresh
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.handleSafariCaching = function(req, res, next) {
+
+    var ua = parser.setUA(req.headers["user-agent"]).getResult();
+    var cc = req.get("cache-control");
+
+    var isSafari = ua.browser.name === "Safari" || ua.browser.name === "[Mobile] Safari";
+
+    if (isSafari && cc === "max-age=0") {
+        req.headers["cache-control"] = "no-cache";
+    }
+    next();
+};
