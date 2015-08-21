@@ -6,6 +6,10 @@
 
 var UAParser = require("ua-parser-js");
 var parser = new UAParser();
+var _ = require("lodash");
+var nodemailer = require("nodemailer");
+var sendgrid = require("sendgrid");
+var mandrill = require("mandrill");
 
 /**
  * Create response callback function, returning either 500 on error
@@ -17,7 +21,7 @@ var parser = new UAParser();
  * @param {Object} res - HTTP Response
  * @param {Function} [formatFn] - Function for formatting response value. Optional.
  */
-exports.setupResponseCallback = function (res, formatFn) {
+function setupResponseCallback(res, formatFn) {
 
     return function (error, returnValue) {
 
@@ -39,7 +43,8 @@ exports.setupResponseCallback = function (res, formatFn) {
 
         res.status(200).json(returnValue);
     };
-};
+}
+exports.setupResponseCallback = setupResponseCallback;
 
 /**
  * Create customer error message for the specified field in
@@ -133,4 +138,132 @@ exports.handleSafariCaching = function(req, res, next) {
         req.headers["cache-control"] = "no-cache";
     }
     next();
+};
+
+
+/**
+ *
+ * @param app {Object}
+ * @param config {Object}
+ * @param ErrorModel {Object}
+ */
+exports.handleUncaughtErrors = function(app, config, ErrorModel) {
+
+    var client;
+    var clientType;
+
+    if (config.email.sendgrid && config.email.sendgrid.username && config.email.sendgrid.apiKey) {
+
+        client = require("sendgrid")(config.email.sendgrid.username, config.email.sendgrid.apiKey);
+        clientType = "SENDGRID";
+    }
+    else if (config.email.mandrillApiKey) {
+
+        var mandrill = require("mandrill");
+        client = new mandrill.Mandrill(config.email.mandrillApiKey);
+        clientType = "MANDRILL";
+    }
+
+    process.on("uncaughtException", function (error) {
+
+        emailError(error, function() {
+
+            ErrorModel.create({
+                stack: error.stack
+            }, function () {
+
+                console.error(error);
+                process.exit();
+            });
+        });
+    });
+
+    app.use(function(error, req, res, next) {
+
+        console.error(error.stack);
+
+        emailError(error, function() {
+
+            ErrorModel.create({
+                user: req.user._id,
+                userAgent: req.headers["user-agent"],
+                method: req.method,
+                url: req.originalUrl,
+                query: JSON.stringify(req.query),
+                body: JSON.stringify(req.body),
+                stack: error.stack
+            }, function () {
+
+                console.error(error);
+                return setupResponseCallback(res)({message: "Express error"});
+            });
+        });
+    });
+
+    /**
+     *
+     * @param error {error}
+     * @param next {function}
+     * @returns {*}
+     */
+    function emailError(error, next) {
+
+        var mailOptions = {
+            to: config.email.admins,
+            subject: "Application Error",
+            html: error.stack.replace(/\n/gm, "<br />")
+        };
+
+        /**
+         * PRODUCTION
+         */
+        if (app.get("env") === "production") {
+
+            if (clientType === "SENDGRID") {
+
+                _.extend(mailOptions, {
+                    from: config.email.noReply,
+                    fromname: config.email.noReplyName
+                });
+                return client.send(mailOptions, next);
+            }
+            else if (clientType === "MANDRILL") {
+
+                var message = {
+                    to: config.email.admins,
+                    from_email: config.noReply,
+                    from_name: config.noReplyName,
+                    subject: "Application Error",
+                    html: error.stack.replace(/\n/gm, "<br />"),
+                    track_opens: true,
+                    track_clicks: true
+                };
+                return client.messages.send({message: message});
+            }
+        }
+
+        /**
+         * LOCAL
+         */
+        if (app.get("env") === "local" && config.email.debug) {
+
+            _.extend(mailOptions, {
+                from: "\"" + config.email.noReplyName + "\" <" + config.email.noReply + ">"
+            });
+            var transport = nodemailer.createTransport("SES", {
+                AWSAccessKeyID: process.env.AWS_ACCESS_KEY_ID,
+                AWSSecretKey: process.env.AWS_SECRET_KEY
+            });
+
+            transport.sendMail(mailOptions, function(error) {
+
+                if (error) {
+                    console.log("transport error:\n");
+                    console.log(error);
+                }
+                transport.close();
+                next();
+            });
+        }
+    }
 };
