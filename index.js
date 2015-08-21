@@ -9,7 +9,7 @@ var parser = new UAParser();
 var _ = require("lodash");
 var nodemailer = require("nodemailer");
 var sendgrid = require("sendgrid");
-var mandrill = require("mandrill");
+var mandrill = require("mandrill-api");
 
 /**
  * Create response callback function, returning either 500 on error
@@ -154,12 +154,11 @@ exports.handleUncaughtErrors = function(app, config, ErrorModel) {
 
     if (config.email.sendgrid && config.email.sendgrid.username && config.email.sendgrid.apiKey) {
 
-        client = require("sendgrid")(config.email.sendgrid.username, config.email.sendgrid.apiKey);
+        client = sendgrid(config.email.sendgrid.username, config.email.sendgrid.apiKey);
         clientType = "SENDGRID";
     }
     else if (config.email.mandrillApiKey) {
 
-        var mandrill = require("mandrill-api");
         client = new mandrill.Mandrill(config.email.mandrillApiKey);
         clientType = "MANDRILL";
     }
