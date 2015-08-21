@@ -159,7 +159,7 @@ exports.handleUncaughtErrors = function(app, config, ErrorModel) {
     }
     else if (config.email.mandrillApiKey) {
 
-        var mandrill = require("mandrill");
+        var mandrill = require("mandrill-api");
         client = new mandrill.Mandrill(config.email.mandrillApiKey);
         clientType = "MANDRILL";
     }
