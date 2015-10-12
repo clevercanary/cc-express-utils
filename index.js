@@ -33,7 +33,12 @@ function setupResponseCallback(res, formatFn) {
                 return res.status(error.statusCode).json(errObj);
             }
             else {
-                return res.status(500).json(error);
+
+                var statusCode = 500;
+                if (error.statusCode) {
+                    statusCode = error.statusCode;
+                }
+                return res.status(statusCode).json(error);
             }
         }
 
