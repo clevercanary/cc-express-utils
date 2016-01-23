@@ -35,6 +35,42 @@ exports.hbHelperIsProd = function(options) {
     }
 };
 
+exports.hbHelperIsLinkedInBot= function(options) {
+
+    var ua = parser.setUA(req.headers['user-agent']).getResult();
+
+    if( us.indexOf('LinkedInBot') != -1) {
+        return options.fn(this); //true its the Linked In Bot
+    }
+    else {
+        return options.inverse(this); //false
+    }
+};
+
+exports.hbHelperIsFacebbokBot= function(options) {
+
+    var ua = parser.setUA(req.headers['user-agent']).getResult();
+
+    if( us.indexOf('facebookexternalhit') != -1) {
+        return options.fn(this); //true its the FB Bot
+    }
+    else {
+        return options.inverse(this); //false
+    }
+};
+
+exports.hbHelperIsTwitterBot= function(options) {
+
+    var ua = parser.setUA(req.headers['user-agent']).getResult();
+
+    if( us.indexOf('Twitterbot') != -1) {
+        return options.fn(this); //true its the Twitter Bot
+    }
+    else {
+        return options.inverse(this); //false
+    }
+};
+
 /**
  * Create response callback function, returning either 500 on error
  * or 200 with data.
