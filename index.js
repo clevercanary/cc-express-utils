@@ -80,7 +80,7 @@ exports.setupResponseCallback = setupResponseCallback;
 
 exports.socialBot = function(req, res, next){
 
-    var ua = parser.setUA(req.headers['user-agent']).getResult();
+    var ua = parser.setUA(req.headers['user-agent']).getResult().ua;
 
     if( ua.indexOf('LinkedInBot') != -1) {
         res.locals.LinkedInBot = true;
@@ -98,8 +98,7 @@ exports.socialBot = function(req, res, next){
         res.locals.Slackbot = true;
     }
 
-    res.locals.LinkedInBot = true;
-
+    next();
 
 }
 
