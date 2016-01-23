@@ -94,9 +94,13 @@ exports.socialBot = function(req, res, next){
         res.locals.TwitterBot = true;
     }
 
-    if( ua.indexOf('LinkedInBot') != -1) {
-        res.locals.LinkedInBot = true;
+    if( ua.indexOf('Slackbot') != -1) {
+        res.locals.Slackbot = true;
     }
+
+    res.locals.LinkedInBot = true;
+
+
 }
 
 /**
