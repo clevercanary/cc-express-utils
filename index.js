@@ -19,11 +19,7 @@ var mandrill = require("mandrill-api");
  *
  * */
 
-/**
- *
- * @param options
- * @returns {*}
- */
+
 
 exports.hbHelperIsProd = function(options) {
 
@@ -35,41 +31,6 @@ exports.hbHelperIsProd = function(options) {
     }
 };
 
-exports.hbHelperIsLinkedInBot= function(options) {
-
-    var ua = parser.setUA(req.headers['user-agent']).getResult();
-
-    if( us.indexOf('LinkedInBot') != -1) {
-        return options.fn(this); //true its the Linked In Bot
-    }
-    else {
-        return options.inverse(this); //false
-    }
-};
-
-exports.hbHelperIsFacebbokBot= function(options) {
-
-    var ua = parser.setUA(req.headers['user-agent']).getResult();
-
-    if( us.indexOf('facebookexternalhit') != -1) {
-        return options.fn(this); //true its the FB Bot
-    }
-    else {
-        return options.inverse(this); //false
-    }
-};
-
-exports.hbHelperIsTwitterBot= function(options) {
-
-    var ua = parser.setUA(req.headers['user-agent']).getResult();
-
-    if( us.indexOf('Twitterbot') != -1) {
-        return options.fn(this); //true its the Twitter Bot
-    }
-    else {
-        return options.inverse(this); //false
-    }
-};
 
 /**
  * Create response callback function, returning either 500 on error
@@ -110,6 +71,33 @@ function setupResponseCallback(res, formatFn) {
     };
 }
 exports.setupResponseCallback = setupResponseCallback;
+
+/**
+ *
+ * @param options
+ * @returns {*}
+ */
+
+exports.socialBot = function(req, res, next){
+
+    var ua = parser.setUA(req.headers['user-agent']).getResult();
+
+    if( ua.indexOf('LinkedInBot') != -1) {
+        res.locals.LinkedInBot = true;
+    }
+
+    if( ua.indexOf('facebookexternalhit') != -1) {
+        res.locals.FaceblookBot = true;
+    }
+
+    if( ua.indexOf('Twitterbot') != -1) {
+        res.locals.TwitterBot = true;
+    }
+
+    if( ua.indexOf('LinkedInBot') != -1) {
+        res.locals.LinkedInBot = true;
+    }
+}
 
 /**
  * Create customer error message for the specified field in
