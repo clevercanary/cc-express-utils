@@ -284,7 +284,8 @@ exports.handleUncaughtErrors = function(app, config, ErrorModel) {
      * @param options
      * @returns {*}
      */
-    exports.hbHelperIsProd  = function(options) {
+
+   var hbHelperIsProd  = function(options) {
 
         if( process.env.NODE_ENV === 'production' ) {
             return options.fn(this);
@@ -293,4 +294,5 @@ exports.handleUncaughtErrors = function(app, config, ErrorModel) {
             return options.inverse(this);
         }
     }
+    module.exports =hbHelperIsProd;
 };
