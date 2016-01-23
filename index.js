@@ -12,6 +12,30 @@ var sendgrid = require("sendgrid");
 var mandrill = require("mandrill-api");
 
 /**
+ *
+ * And now for some handlebars helpers...
+ * And now for some handlebars helpers...
+ * And now for some handlebars helpers...
+ *
+ * */
+
+/**
+ *
+ * @param options
+ * @returns {*}
+ */
+
+exports.hbHelperIsProd = function(options) {
+
+    if( process.env.NODE_ENV === 'production' ) {
+        return options.fn(this);
+    }
+    else {
+        return options.inverse(this);
+    }
+};
+
+/**
  * Create response callback function, returning either 500 on error
  * or 200 with data.
  *
@@ -270,29 +294,4 @@ exports.handleUncaughtErrors = function(app, config, ErrorModel) {
             });
         }
     }
-
-    /**
-     *
-     * And now for some handlebars helpers...
-     * And now for some handlebars helpers...
-     * And now for some handlebars helpers...
-     *
-     * */
-
-    /**
-     *
-     * @param options
-     * @returns {*}
-     */
-
-   var hbHelperIsProd  = function(options) {
-
-        if( process.env.NODE_ENV === 'production' ) {
-            return options.fn(this);
-        }
-        else {
-            return options.inverse(this);
-        }
-    }
-    module.exports =hbHelperIsProd;
 };
