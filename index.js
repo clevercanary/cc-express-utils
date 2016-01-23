@@ -270,4 +270,27 @@ exports.handleUncaughtErrors = function(app, config, ErrorModel) {
             });
         }
     }
+
+    /**
+     *
+     * And now for some handlebars helpers...
+     * And now for some handlebars helpers...
+     * And now for some handlebars helpers...
+     *
+     * */
+
+    /**
+     *
+     * @param options
+     * @returns {*}
+     */
+    exports.hbHelperIsProd  = function(options) {
+
+        if( process.env.NODE_ENV === 'production' ) {
+            return options.fn(this);
+        }
+        else {
+            return options.inverse(this);
+        }
+    }
 };
