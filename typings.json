@@ -1,0 +1,27 @@
+{
+  "name": "cc-express-utils",
+  "dependencies": {
+    "mongoose": "registry:npm/mongoose#4.3.5+20160628072220"
+  },
+  "globalDependencies": {
+    "express-serve-static-core": "registry:dt/express-serve-static-core#4.0.0+20160819131900",
+    "node": "registry:env/node#4.0.0+20160813135048"
+  },
+  "devDependencies": {
+    "bluebird": "registry:npm/bluebird#3.4.1+20160811213708",
+    "lodash": "registry:npm/lodash#4.0.0+20160723033700"
+  },
+  "globalDevDependencies": {
+    "express": "registry:dt/express#4.0.0+20160708185218",
+    "mandrill-api": "registry:dt/mandrill-api#1.0.0+20160316155526",
+    "mime": "registry:dt/mime#0.0.0+20160316155526",
+    "nodemailer": "registry:dt/nodemailer#1.3.2+20160811111312",
+    "nodemailer-direct-transport": "registry:dt/nodemailer-direct-transport#0.0.0+20160805030905",
+    "nodemailer-smtp-transport": "registry:dt/nodemailer-smtp-transport#0.0.0+20160805030905",
+    "passport": "registry:dt/passport#0.2.0+20160720063208",
+    "passport-local": "registry:dt/passport-local#0.0.0+20160316155526",
+    "sendgrid": "registry:dt/sendgrid#1.1.0+20160521152616",
+    "serve-static": "registry:dt/serve-static#0.0.0+20160606155157",
+    "ua-parser-js": "registry:dt/ua-parser-js#0.7.10+20160626105336"
+  }
+}
