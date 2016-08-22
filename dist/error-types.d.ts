@@ -1,9 +1,7 @@
 /**
  * Error Types
  */
-export interface Dictionary<T> {
-    [key: string]: T;
-}
+import { Dictionary } from "./typings";
 /**
  * Express Response Error With HTTP Status Code
  */
