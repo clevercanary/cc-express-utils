@@ -5,6 +5,21 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 /**
+ * Error used for extension. ES5 can't inherit Error directly without some hacking.
+ * (this.constructor as any) is to handle typescript es5 lib errors.
+ */
+var ExtendableError = (function (_super) {
+    __extends(ExtendableError, _super);
+    function ExtendableError(message) {
+        _super.call(this, message);
+        this.name = this.constructor.name;
+        this.message = message;
+        Error.captureStackTrace(this, this.constructor);
+    }
+    return ExtendableError;
+}(Error));
+exports.ExtendableError = ExtendableError;
+/**
  * Express Response Error With HTTP Status Code
  */
 var ResponseError = (function (_super) {
@@ -25,7 +40,7 @@ var ResponseError = (function (_super) {
         return err;
     };
     return ResponseError;
-}(Error));
+}(ExtendableError));
 exports.ResponseError = ResponseError;
 var ValidationError = (function (_super) {
     __extends(ValidationError, _super);
@@ -53,7 +68,7 @@ var ValidationError = (function (_super) {
         return errorResponse;
     };
     return ValidationError;
-}(Error));
+}(ExtendableError));
 exports.ValidationError = ValidationError;
 /**
  * PRIVATES
