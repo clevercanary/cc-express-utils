@@ -1,7 +1,8 @@
 /**
  * Express Handlers
  */
-import { Request, Response, NextFunction } from "express-serve-static-core";
+import { Response, NextFunction } from "express";
+import { Request } from "./typings";
 /**
  * Social Bot
  *

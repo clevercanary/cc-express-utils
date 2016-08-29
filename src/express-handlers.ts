@@ -1,7 +1,8 @@
 /**
  * Express Handlers
  */
-import { Request, Response, NextFunction } from "express-serve-static-core";
+import { Response, NextFunction } from "express";
+import { Request } from "./typings";
 
 import { UAParser } from "ua-parser-js";
 const parser = new UAParser();
@@ -15,7 +16,7 @@ const parser = new UAParser();
  */
 export function socialBot(req: Request, res: Response, next: NextFunction): any {
 
-    let ua = parser.setUA(req.headers['user-agent']).getResult().ua;
+    let ua = parser.setUA(req.headers['user-agent'] as string).getResult().ua;
 
     if (ua.indexOf('LinkedInBot') != -1) {
         res.locals.LinkedInBot = true;
@@ -46,7 +47,7 @@ export function socialBot(req: Request, res: Response, next: NextFunction): any 
  */
 export function handleSafariCaching(req: Request, res: Response, next: NextFunction): any {
 
-    let ua = parser.setUA(req.headers["user-agent"]).getResult();
+    let ua = parser.setUA(req.headers["user-agent"] as string).getResult();
     let cc = req.get("cache-control");
 
     let isSafari = ua.browser.name === "Safari" || ua.browser.name === "[Mobile] Safari";

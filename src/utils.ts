@@ -1,7 +1,7 @@
 /**
  * Express Utilities
  */
-import { Application, Request, Response, NextFunction } from "express-serve-static-core";
+import { Application, Response, NextFunction } from "express";
 import { Model } from "mongoose";
 
 import {
@@ -9,7 +9,8 @@ import {
     HBHelperOptions,
     CCApplicationConfig,
     ErrorModel,
-    ErrorWithCode
+    ErrorWithCode,
+    Request
 } from "./typings"
 
 /**
