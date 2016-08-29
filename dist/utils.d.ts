@@ -1,7 +1,7 @@
 /**
  * Express Utilities
  */
-import { Application, Response } from "express-serve-static-core";
+import { Application, Response } from "express";
 import { Model } from "mongoose";
 import { Dictionary, HBHelperOptions, CCApplicationConfig, ErrorModel } from "./typings";
 /**
